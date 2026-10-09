@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend Deep Lab
 
-## Getting Started
+Ứng dụng học frontend từ tài liệu chính thức của **MDN, React, TypeScript và Next.js**, xây dựng bằng Next.js, React, TypeScript và Tailwind CSS.
 
-First, run the development server:
+## Chức năng
+
+- Đọc tài liệu, tìm kiếm và đánh dấu bài đã đọc.
+- Dịch bài viết sang tiếng Việt bằng Groq, trình bày thuật ngữ theo dạng **tiếng Việt (English)**; giữ nguyên tên riêng, code và đường dẫn.
+- Chuyển sang bản gốc tiếng Anh để đối chiếu.
+- Hỏi AI về nội dung bài đang đọc.
+- Lưu bản dịch để tái sử dụng, giảm số lần gọi API.
+
+## Yêu cầu
+
+- Node.js **22.12 trở lên**, npm và Git.
+- Kết nối Internet để tải tài liệu và gọi API.
+- Groq API key để sử dụng dịch thuật và trợ lý AI.
+
+## Cách chạy
+
+Chạy các lệnh trong thư mục dự án.
+
+### 1. Cài thư viện
+
+```bash
+npm install
+```
+
+### 2. Cấu hình API
+
+Sao chép `.env.example` thành `.env.local`. Trên Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+Điền API key của bạn vào `.env.local`:
+
+```dotenv
+GROQ_API_KEY=your_key_here
+GROQ_MODEL=openai/gpt-oss-20b
+GROQ_TRANSLATION_MODEL=openai/gpt-oss-20b
+```
+
+`GROQ_TRANSLATION_MODEL` là tùy chọn; nếu bỏ trống, phần dịch sử dụng `GROQ_MODEL`. Không chia sẻ API key. Sau khi sửa cấu hình, khởi động lại server.
+
+### 3. Đồng bộ tài liệu
+
+```bash
+npm run docs:sync
+```
+
+Lệnh này tải tài liệu MDN, React và TypeScript từ GitHub, đọc tài liệu Next.js đi kèm phiên bản đã cài, rồi tạo dữ liệu và chỉ mục tìm kiếm trong `data/`. Lần đầu có thể mất vài phút.
+
+**Cần chạy bước này trước khi chạy hoặc build trên máy mới**, vì `data/` không được lưu trong Git. Chạy lại khi muốn cập nhật tài liệu.
+
+### 4. Khởi động
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mở [http://localhost:3000/learn](http://localhost:3000/learn).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Bản dịch được tạo khi bạn mở bài và lưu trong `data/translations/vi/`. Lần đọc đầu có thể chậm; nếu API chạm giới hạn, chờ rồi chọn **Thử dịch lại**, hoặc đọc **Bản gốc (English)**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Chạy bản production
 
-## Learn More
+Sau khi cấu hình API và đồng bộ tài liệu:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+npm run start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Kiểm tra
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run lint
+npm test
+npx tsc --noEmit
+```
 
-## Deploy on Vercel
+Để kiểm tra các trang và API cơ bản, giữ server đang chạy và mở terminal khác:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run test:smoke
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Nếu server dùng cổng khác:
+
+```bash
+npm run test:smoke -- http://localhost:3001
+```
